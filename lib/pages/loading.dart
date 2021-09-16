@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:world_time/services/world_time.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
@@ -9,16 +10,17 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  String time = 'loading...';
-
   void setupWorldTime() async {
     WorldTime instance =
         WorldTime(location: 'Dhaka', flag: 'germany.png', url: 'Asia/Dhaka');
     await instance.getTime();
-    print(instance.time);
-    setState(() {
-      time = instance.time;
-    });
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      //pushNamed put a new route on top of current, pushReplacementNamed replace the curretn routr
+      'location': instance.location,
+      'flag': instance.flag,
+      'time': instance.time,
+      'isDayTime': instance.isDayTime,
+    }); //arguments takes a map as parameter, ehich is key value pair of what we want to pass
   }
 
   @override
@@ -29,10 +31,13 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(50.0),
-        child: Text(time),
+    return const Scaffold(
+      backgroundColor: Colors.blueAccent,
+      body: Center(
+        child: SpinKitFadingCube(
+          color: Colors.white,
+          size: 50.0,
+        ),
       ),
     );
   }
